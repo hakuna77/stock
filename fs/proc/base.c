@@ -95,9 +95,6 @@
 #include <linux/flex_array.h>
 #include <linux/posix-timers.h>
 #include <linux/cpufreq_times.h>
-#ifdef CONFIG_HARDWALL
-#include <asm/hardwall.h>
-#endif
 #include <trace/events/oom.h>
 #include "internal.h"
 #include "fd.h"
@@ -3128,9 +3125,6 @@ static const struct pid_entry tgid_base_stuff[] = {
 #ifdef CONFIG_TASK_IO_ACCOUNTING
 	ONE("io",	S_IRUSR, proc_tgid_io_accounting),
 #endif
-#ifdef CONFIG_HARDWALL
-	ONE("hardwall",   S_IRUGO, proc_pid_hardwall),
-#endif
 #ifdef CONFIG_USER_NS
 	REG("uid_map",    S_IRUGO|S_IWUSR, proc_uid_map_operations),
 	REG("gid_map",    S_IRUGO|S_IWUSR, proc_gid_map_operations),
@@ -3537,9 +3531,6 @@ static const struct pid_entry tid_base_stuff[] = {
 #endif
 #ifdef CONFIG_TASK_IO_ACCOUNTING
 	ONE("io",	S_IRUSR, proc_tid_io_accounting),
-#endif
-#ifdef CONFIG_HARDWALL
-	ONE("hardwall",   S_IRUGO, proc_pid_hardwall),
 #endif
 #ifdef CONFIG_USER_NS
 	REG("uid_map",    S_IRUGO|S_IWUSR, proc_uid_map_operations),

@@ -30,7 +30,7 @@
 		seq_put_decimal_ull_width(m, str, (val) << (PAGE_SHIFT-10), 8)
 void task_mem(struct seq_file *m, struct mm_struct *mm)
 {
-	unsigned long text, lib, swap, ptes, pmds, puds, anon, file, shmem;
+	unsigned long text, lib, swap, anon, file, shmem;
 	unsigned long hiwater_vm, total_vm, hiwater_rss, total_rss;
 
 	anon = get_mm_counter(mm, MM_ANONPAGES);
@@ -54,9 +54,6 @@ void task_mem(struct seq_file *m, struct mm_struct *mm)
 	text = (PAGE_ALIGN(mm->end_code) - (mm->start_code & PAGE_MASK)) >> 10;
 	lib = (mm->exec_vm << (PAGE_SHIFT-10)) - text;
 	swap = get_mm_counter(mm, MM_SWAPENTS);
-	ptes = PTRS_PER_PTE * sizeof(pte_t) * mm_nr_ptes(mm);
-	pmds = PTRS_PER_PMD * sizeof(pmd_t) * mm_nr_pmds(mm);
-	puds = PTRS_PER_PUD * sizeof(pud_t) * mm_nr_puds(mm);
 	SEQ_PUT_DEC("VmPeak:\t", hiwater_vm);
 	SEQ_PUT_DEC(" kB\nVmSize:\t", total_vm);
 	SEQ_PUT_DEC(" kB\nVmLck:\t", mm->locked_vm);
@@ -73,11 +70,7 @@ void task_mem(struct seq_file *m, struct mm_struct *mm)
 	seq_put_decimal_ull_width(m,
 		    " kB\nVmLib:\t", lib >> 10, 8);
 	seq_put_decimal_ull_width(m,
-		    " kB\nVmPTE:\t", ptes >> 10, 8);
-	seq_put_decimal_ull_width(m,
-		    " kB\nVmPMD:\t", pmds >> 10, 8);
-	seq_put_decimal_ull_width(m,
-		    " kB\nVmPUD:\t", pmds >> 10, 8);
+		    " kB\nVmPTE:\t", mm_pgtables_bytes(mm) >> 10, 8);
 	SEQ_PUT_DEC(" kB\nVmSwap:\t", swap);
 	seq_puts(m, " kB\n");
 	hugetlb_report_usage(m, mm);
